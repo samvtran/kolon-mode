@@ -1,0 +1,3 @@
+kolon-mode is an adaptation of https://github.com/yoshiki/tx-mode and https://bitbucket.org/lattenwald/.emacs.d/src/347b18c4f834/site-lisp/kolon-mode.el to make our lives with Xslate a little easier. It features very basic things that should make working with an html-mode derived major mode a little easier.
+
+As such, there is no autotabbing, other than tabbing up to the previous line and manual tabbing from there on. There's a small quirk in which a newline following a line that isn't indented will add a 4-spaced tab anyway. Subsequent lines will not. Not too big of a deal. Hopefully someone has a better workaround than the indent-newline function.
