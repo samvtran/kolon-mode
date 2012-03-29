@@ -24,7 +24,7 @@
 	 (1 font-lock-string-face t)
 	 (2 font-lock-variable-name-face t)
 	 (3 font-lock-string-face t))
-   '("^\t*\\(:[[:space:]]?+#\\)\\(.*\\)"
+   '("^\t*\\(:[[:space:]]*#\\)\\(.*\\)"
 	 (1 font-lock-comment-delimiter-face t)
 	 (2 font-lock-comment-face t))
    (list
