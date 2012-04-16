@@ -1,7 +1,7 @@
 kolon-mode
 ==========
 
-kolon-mode is a html-mode derived major mode for Text::Xslate's Kolon syntax.
+kolon-mode is an html-mode derived major mode for Text::Xslate's Kolon syntax.
 
 Features
 --------
