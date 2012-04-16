@@ -1,3 +1,58 @@
+;;; kolon-mode.el --- Syntax highlighting for Text::Xslate's Kolon syntax
+;; 
+;; Filename: kolon-mode.el
+;; Description: Syntax highlighting for Text::Xslate's Kolon syntax
+;; Author: Sam Tran
+;; Maintainer: Sam Tran
+;; Created: Mon Apr 16 09:26:25 2012 (-0500)
+;; Version: 0.1
+;; Last-Updated: Mon Apr 16 09:33:35 2012 (-0500)
+;;           By: Sam Tran
+;;     Update #: 2
+;; URL: https://github.com/samvtran/kolon-mode
+;; Keywords: xslate, perl
+;; Compatibility: GNU Emacs: 23.x
+;; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Commentary: 
+;; 
+;; Highlights Text::Xslate files using the Kolon syntax
+;; 
+;; Some parts of this code originated from two other projects:
+;;
+;; https://github.com/yoshiki/tx-mode
+;; https://bitbucket.org/lattenwald/.emacs.d/src/347b18c4f834/site-lisp/kolon-mode.el
+;;
+;; Commands (interactive functions):
+;; `kolon-show-version'
+;; `kolon-open-docs'
+;;
+;; Other functions:
+;; `kolon-indent-line'
+;; `indent-newline'
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Change Log:
+;; 16-Apr-2012    Sam Tran  
+;;    Last-Updated: Mon Apr 16 09:33:35 2012 (-0500) #2 (Sam Tran)
+;;    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;; This code is free software; you can redistribute it and/or modify
+;; it under the terms of the Artistic License 2.0. For details, see
+;; http://www.perlfoundation.org/artistic_license_2_0
+;; 
+;; This program is distributed in the hope that it will be useful,
+;; but it is provided "as is" and without any express or implied
+;; warranties. For details, see 
+;; http://www.perlfoundation.org/artistic_license_2_0
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; 
+;;; Code:
+
 (require 'font-lock)
 (require 'easymenu)
 
@@ -16,18 +71,17 @@
   :type 'integer
   :group 'kolon)
 
+(defcustom kolon-newline-clear-whitespace nil
+  "Clear whitespace on adding a newline."
+  :type 'boolean
+  :group 'kolon)
+
 (defvar kolon-mode-map (make-keymap)
   "Keymap for `kolon-mode'.")
 
 (defvar kolon-keywords "block\\|override\\|cascade\\|include\\|super\\|before\\|after\\|around\\|with")
 (defconst kolon-font-lock-keywords 
   (list
-   ;; Fontify <: ... :> expressions
-   ;;	(rx (group "<:") (group (1+ anything)) (group ":>"))
-   ;;Original regex below:
-   ;;'("\\(<:\\)\\(\\(?:.\\|
-   ;;\\)+?\\)\\(:>\\)"  
-   ;; (<:)((?:.|)+?)(:>)
    '("\\(<:\\)\\(\\(?:.\\|\\)+?\\)\\(:>\\)"
 	 (1 font-lock-string-face t)
 	 (2 font-lock-variable-name-face t)
@@ -55,22 +109,22 @@
 		(indent-line-to previous-indentation)
 	  (indent-line-to (+ (current-indentation) kolon-indent-offset)))))
 
-;; Prevents indentation at bob, bol, whitespace-only lines, or lines at column 0
+;; Prevents indentation at bob, bol, whitespace-only lines (if enabled),
+;; or lines at column 0
 (defun indent-newline ()
   "Newline and indents"
   (interactive)
   (cond
-   ;; Beginning of buffer, or beginning of an existing line, don't indent:
-   ((or (bobp) (bolp)) (newline))
-
    ;; If we're on a whitespace-only line,
+   ;; AND only if kolon-newline-clear-whitespace is enabled
    ((and (eolp)
-		 (save-excursion (re-search-backward "^\\(\\s \\)*$"
-											 (line-beginning-position) t)))
-	;; ... delete the whitespace, then add another newline:
-	(kill-line 0)
-	(newline))
+		 kolon-newline-clear-whitespace
+   		 (save-excursion (re-search-backward "^\\(\\s \\)*$"
+   											 (line-beginning-position) t)))
+   	(kill-line 0)
+   	(newline))
 
+   ;; Catches bob, bol, and everything at column 0 (i.e., not indented)
    ((= 0 (current-indentation)) (newline))
    
    ;; Else (not on whitespace-only) insert a newline,
@@ -110,3 +164,6 @@
   (setq mode-name "Kolon"))
 
 (provide 'kolon-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; kolon-mode.el ends here
