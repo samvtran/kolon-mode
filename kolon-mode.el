@@ -79,17 +79,20 @@
 (defvar kolon-mode-map (make-keymap)
   "Keymap for `kolon-mode'.")
 
-(defvar kolon-keywords "block\\|override\\|cascade\\|include\\|super\\|before\\|after\\|around\\|with")
+(defvar kolon-keywords "block\\|override\\|cascade\\|include\\|super\\|before\\|after\\|around\\|with\\|macro")
 (defconst kolon-font-lock-keywords 
   (list
+   ;; <: foobar :>
    '("\\(<:\\)\\(\\(?:.\\|\\)+?\\)\\(:>\\)"
 	 (1 font-lock-string-face t)
 	 (2 font-lock-variable-name-face t)
 	 (3 font-lock-string-face t))
-   '("\\(^\t*:\\)\\(\\(?:.\\)*?\\)\\({[[:space:]]?}?;?\\|}\\|;\\|$\\)"
+   ;; : foobar -> {}
+   '("\\(^\t*:\\)\\(\\(?:.\\)*?\\)\\({.*}?;?\\|}\\|;\\|$\\)"
 	 (1 font-lock-string-face t)
 	 (2 font-lock-variable-name-face t)
 	 (3 font-lock-string-face t))
+   ;; : # comments
    '("^\t*\\(:[[:space:]]*#\\)\\(.*\\)"
 	 (1 font-lock-comment-delimiter-face t)
 	 (2 font-lock-comment-face t))
