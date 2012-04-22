@@ -145,7 +145,6 @@
   "Comment each line in the region in kolon-mode.
 See `comment-region'."
   (interactive "r\np")
-  ;; (comment-region beg end arg))
   (let ((comment-start ":#") (comment-end ""))
 	(comment-region beg end arg)))
 
@@ -153,11 +152,11 @@ See `comment-region'."
   "Uncomment each line in the region in kolon-mode.
 See `comment-region'."
   (interactive "r")
-  ;; Note: This is what ruby mode uses. Seems to work for now.
-  ;; Better solutions are welcome! :)
+  ;; Note: This is what ruby mode uses. Has issues with grabbing too much.
+  ;; Will need to investigate more "official" ways of doing these
   (save-excursion
 	(goto-char beg)
-	(while (re-search-forward "^\\([ \t]*\\):#\s?" end t)
+	(while (re-search-forward "^\\([ \t]*\\):\s*#\s?" end t)
 	  (replace-match "\\1" nil nil))))
 
 ;; Menubar
