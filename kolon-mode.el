@@ -6,9 +6,9 @@
 ;; Maintainer: Sam Tran
 ;; Created: Mon Apr 16 09:26:25 2012 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Mon Apr 16 09:33:35 2012 (-0500)
+;; Last-Updated: Sun Apr 22 14:02:23 2012 (-0500)
 ;;           By: Sam Tran
-;;     Update #: 2
+;;     Update #: 3
 ;; URL: https://github.com/samvtran/kolon-mode
 ;; Keywords: xslate, perl
 ;; Compatibility: GNU Emacs: 23.x
@@ -27,17 +27,18 @@
 ;; Commands (interactive functions):
 ;; `kolon-show-version'
 ;; `kolon-open-docs'
+;; `kolon-comment-region'
+;; `kolon-uncomment-region'
 ;;
 ;; Other functions:
 ;; `kolon-indent-line'
 ;; `indent-newline'
 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Change Log:
-;; 16-Apr-2012    Sam Tran  
-;;    Last-Updated: Mon Apr 16 09:33:35 2012 (-0500) #2 (Sam Tran)
-;;    
+;; TODO: It would be nice to figure out how comment-or-uncomment-region
+;; works so we can get it to work properly. Right now it'll insert
+;; HTML comments, so kolon-(un)comment-region will need to be bound
+;; individually or used from their menu entries.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;; This code is free software; you can redistribute it and/or modify
@@ -88,12 +89,12 @@
 	 (2 font-lock-variable-name-face t)
 	 (3 font-lock-string-face t))
    ;; : foobar -> {}
-   '("\\(^\\s-*:\\)\\(\\(?:.\\)*?\\)\\({.*}?;?\\|}\\|;\\|$\\)"
+   '("\\(^[ \t]*:\\)\\(\\(?:.\\)*?\\)\\({.*}?;?\\|}\\|;\\|$\\)"
 	 (1 font-lock-string-face t)
 	 (2 font-lock-variable-name-face t)
 	 (3 font-lock-string-face t))
    ;; : # comments
-   '("^\\s-*\\(:\s*#\\)\\(.*$\\)"
+   '("^[ \t]*\\(:\s*#\\)\\(.*$\\)"
 	 (1 font-lock-comment-delimiter-face t)
 	 (2 font-lock-comment-face t))
    (list
@@ -136,25 +137,35 @@
 	  (indent-according-to-mode)))
   )
 
-(defun kolon-comment-region (b e arg)
-  "Comment or uncomment each line in the region in CPerl mode.
+;(make-local-variable 'comment-start)
+;(setq comment-start ":#")
+;(make-local-variable 'comment-end)
+;(setq comment-end "")
+(defun kolon-comment-region (beg end arg)
+  "Comment each line in the region in kolon-mode.
 See `comment-region'."
   (interactive "r\np")
+  ;; (comment-region beg end arg))
   (let ((comment-start ":#") (comment-end ""))
-    (comment-region b e arg)))
+	(comment-region beg end arg)))
 
-(defun kolon-uncomment-region (b e arg)
-  "Uncomment or comment each line in the region in CPerl mode.
+(defun kolon-uncomment-region (beg end)
+  "Uncomment each line in the region in kolon-mode.
 See `comment-region'."
-  (interactive "r\np")
-  (let ((comment-start ":#") (comment-end ""))
-    (comment-region b e -1)))
-
+  (interactive "r")
+  ;; Note: This is what ruby mode uses. Seems to work for now.
+  ;; Better solutions are welcome! :)
+  (save-excursion
+	(goto-char beg)
+	(while (re-search-forward "^\\([ \t]*\\):#\s?" end t)
+	  (replace-match "\\1" nil nil))))
 
 ;; Menubar
 (easy-menu-define kolon-mode-menu kolon-mode-map
   "Menu for `kolon-mode'."
   '("Kolon"
+	["Comment Region" kolon-comment-region]
+	["Uncomment Region" kolon-uncomment-region]
 	["Kolon Docs" kolon-open-docs]
 	["Version" kolon-show-version]
 	))
