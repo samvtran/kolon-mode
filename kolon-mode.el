@@ -88,12 +88,12 @@
 	 (2 font-lock-variable-name-face t)
 	 (3 font-lock-string-face t))
    ;; : foobar -> {}
-   '("\\(^\t*:\\)\\(\\(?:.\\)*?\\)\\({.*}?;?\\|}\\|;\\|$\\)"
+   '("\\(^\\s-*:\\)\\(\\(?:.\\)*?\\)\\({.*}?;?\\|}\\|;\\|$\\)"
 	 (1 font-lock-string-face t)
 	 (2 font-lock-variable-name-face t)
 	 (3 font-lock-string-face t))
    ;; : # comments
-   '("^\t*\\(:[[:space:]]*#\\)\\(.*\\)"
+   '("^\\s-*\\(:\s*#\\)\\(.*$\\)"
 	 (1 font-lock-comment-delimiter-face t)
 	 (2 font-lock-comment-face t))
    (list
@@ -136,6 +136,21 @@
 	  (indent-according-to-mode)))
   )
 
+(defun kolon-comment-region (b e arg)
+  "Comment or uncomment each line in the region in CPerl mode.
+See `comment-region'."
+  (interactive "r\np")
+  (let ((comment-start ":#") (comment-end ""))
+    (comment-region b e arg)))
+
+(defun kolon-uncomment-region (b e arg)
+  "Uncomment or comment each line in the region in CPerl mode.
+See `comment-region'."
+  (interactive "r\np")
+  (let ((comment-start ":#") (comment-end ""))
+    (comment-region b e -1)))
+
+
 ;; Menubar
 (easy-menu-define kolon-mode-menu kolon-mode-map
   "Menu for `kolon-mode'."
@@ -163,7 +178,6 @@
 
   ;; Keybindings
   (define-key kolon-mode-map (kbd "C-c C-k") 'kolon-open-docs)
-
   (setq mode-name "Kolon"))
 
 (provide 'kolon-mode)
