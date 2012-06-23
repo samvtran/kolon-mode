@@ -1,0 +1,147 @@
+:# Use this file to test font lock regexes
+:# Misc. Highlighting
+		: tabs
+        : spaces
+		
+:# Variable access
+<: $var :>
+<: $var.0 :>
+<: $var.field :>
+<: $var["field"] :>
+<: $var[0] :>
+
+:# Literals
+: # Special 
+: nil # as undef, indicating "nothing"
+: true # as the integer 1
+: false # as the integer 0
+
+: # String
+: "foo\n" #the same as perl
+: 'foo\n' #the same as perl
+
+: # Number
+: 42
+: 3.14
+: 0xFF #hex
+: 0777 #octal
+: 0b1010 #binary
+
+: # Array
+: for [1, 2, 3] -> $i { ... }
+
+: # Hash, always parsed as hash literals
+: foo({ foo -> "bar" })
+: {}.kv(); # ok
+: +{}.kv(); # also ok
+
+:# Expressions
+: # Conditional operator (?:)
+: $var.value == nil ? "nil" : $var.value
+
+: # Relational operators (== != < <= > >=)
+: $var == 10 ? "10"     : "not 10"
+: $var != 10 ? "not 10" : "10"
+
+: #Arithmetic operators (+ - * / % min max):
+: $var * 10_000
+: ($var % 10) == 0
+: 10 min 20 min 30 # 10
+: 10 max 20 max 30 # 30
+
+: #Bitwise operators (prefix:<+^> +& +| +^)
+
+: 0x1010 +| 0x3200 # bitwise or:  0x3210
+: 0x1010 +& 0x3200 # bitwise and: 0x1000
+: 0x1010 +^ 0x3200 # bitwise xor: 0x0210
+: +^0x1010         # bitwise neg: 0xFFFFEFEF (on 32 bit system)
+
+: # Logical operators (! && || // not and or)
+: $var >= 0 && $var <= 10 ? "ok" : "too smaller or too larger"
+: $var // "foo" # as a default value
+
+: # String operators (~)
+: "[" ~ $var ~ "]" # concatination
+
+:# Constants
+: constant FOO = 42;
+: my $foo = 42;
+
+:# Loops
+: # iterate over an ARRAY reference
+: for $data -> $item {
+	[<: $item.field :>]
+: }
+
+: # iterate over a HASH reference
+: # You must specify how to iterate it (.keys(), .values() or .kv())
+: for $data.keys() -> $key {
+	<: $key :>=<: $data[$key] :>
+: }
+: else {
+	Else!
+: }
+
+: # iterator index
+: if ($~item % 2) == 0 {
+	Even (0, 2, 4, ...)
+: }
+    : for $data -> $i {
+        : $~i       # 0-origin iterator index (0, 1, 2, ...)
+        : $~i.index # the same as $~i
+        : $~i.count # the same as $~i + 1
+
+        : if ($~i.index % 2) == 0 {
+            even
+        : }
+        : else {
+            odd
+        : }
+        : $i~.cycle("even", "odd") # => "even" -> "odd" -> "even" -> "odd" ...
+    : }
+
+: # while loops
+: while $dbh.fetch() -> $item {
+	[<: $item.field :>]
+: }
+
+: while defined $dbh.fetch() -> $item {
+	[<: $item # $item can be false-but-defined :>]
+	<: #comment :>=<: # another comment :>
+: }
+
+: # loop control
+: for $data -> $item {
+	: last if $item == 42
+: }
+: if $var == nil {
+$var is nil.
+: }
+: else if $var != "foo" { # elsif is okay
+	$var is not nil nor "foo".
+: }
+: else {
+	$var is "foo".
+: }
+
+: if( $var >= 1 && $var <= 10 ) {
+	$var is 1 .. 10
+: }
+
+: if ($var + 10) == 20 { } # OK
+
+: given $var -> $it {
+	: when "foo" {
+		it is foo.
+	: }
+	: when ["bar", "baz" ] {
+        it is either bar or baz.
+	: }
+	: when $it == "bar" or $it = "baz" {
+		it is either bar or baz.
+	: }
+	: default {
+		it is not foo nor bar.
+	: }
+: }
+<: $boo:>

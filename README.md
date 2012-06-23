@@ -12,11 +12,13 @@ Kolon docs on CPAN are accessible by default with C-c C-k
 Todo
 ----
 * Syntax highlighting for everything here: http://search.cpan.org/dist/Text-Xslate/lib/Text/Xslate/Syntax/Kolon.pm
-* More advanced features and customizability
+* Commenting and uncommenting that works well, especially via comment-or-uncomment-region (i.e., C-c C-c)
 
 Issues
 ------
-No known issues at the moment. Please report any issues (or feature requests!) here on github. Thanks!
+Commenting/uncommenting via kolon-comment-region and kolon-uncomment-region can be a little too greedy, especially if you're selectively uncommenting, so don't rely on those functions just yet.
+
+Please report any other issues (or feature requests!) here on github. Thanks!
 
 License, et al.
 ---------------

@@ -6,12 +6,12 @@
 ;; Maintainer: Sam Tran
 ;; Created: Mon Apr 16 09:26:25 2012 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Sun Apr 22 14:02:23 2012 (-0500)
+;; Last-Updated: Fri Jun 22 21:25:58 2012 (-0500)
 ;;           By: Sam Tran
-;;     Update #: 3
+;;     Update #: 4
 ;; URL: https://github.com/samvtran/kolon-mode
 ;; Keywords: xslate, perl
-;; Compatibility: GNU Emacs: 23.x
+;; Compatibility: GNU Emacs: 23.x, 24.x
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -83,20 +83,28 @@
 (defvar kolon-keywords "block\\|override\\|cascade\\|include\\|super\\|before\\|after\\|around\\|with\\|macro")
 (defconst kolon-font-lock-keywords 
   (list
-   ;; <: foobar :>
-   '("\\(<:\\)\\(\\(?:.\\|\\)+?\\)\\(:>\\)"
+   ;; <: foobar :> tags
+   '("\\(<:\\)\\(\\(?:.\\|\\)?+?\\)\\(:>\\)"
 	 (1 font-lock-string-face t)
 	 (2 font-lock-variable-name-face t)
 	 (3 font-lock-string-face t))
-   ;; : foobar -> {}
+   ;; : foobar -> {} line code
    '("\\(^[ \t]*:\\)\\(\\(?:.\\)*?\\)\\({.*}?;?\\|}\\|;\\|$\\)"
 	 (1 font-lock-string-face t)
 	 (2 font-lock-variable-name-face t)
 	 (3 font-lock-string-face t))
-   ;; : # comments
+   ;; : # comments only line code
    '("^[ \t]*\\(:\s*#\\)\\(.*$\\)"
 	 (1 font-lock-comment-delimiter-face t)
 	 (2 font-lock-comment-face t))
+   ;; : foobar -> {} # comments at end of line code
+   '("\\(^[ \t]*:\\)\\(\\(?:.\\)*?\\)\\({.*}?;?\\|}\\|;\\|$\\)?\\([ \t]*#\\)\\(.*$\\)"
+	 (4 font-lock-comment-delimiter-face t)
+	 (5 font-lock-comment-face t))
+   ;; <: $foobar #comments :>
+   '("\\(<:\\)\\(\\(?:.\\|\\)?+?\\)\\(#\\)\\(.*?\\)\\(:>\\)"
+	 (3 font-lock-comment-delimiter-face t)
+	 (4 font-lock-comment-face t))
    (list
    	(concat "\\b\\(" kolon-keywords "\\)\\b") 
    	1 font-lock-keyword-face t)
