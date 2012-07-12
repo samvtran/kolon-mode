@@ -6,9 +6,9 @@
 ;; Maintainer: Sam Tran
 ;; Created: Mon Apr 16 09:26:25 2012 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Fri Jun 22 21:25:58 2012 (-0500)
+;; Last-Updated: Thu Jul 12 12:37:29 2012 (-0500)
 ;;           By: Sam Tran
-;;     Update #: 4
+;;     Update #: 5
 ;; URL: https://github.com/samvtran/kolon-mode
 ;; Keywords: xslate, perl
 ;; Compatibility: GNU Emacs: 23.x, 24.x
@@ -84,7 +84,8 @@
 (defconst kolon-font-lock-keywords 
   (list
    ;; <: foobar :> tags
-   '("\\(<:\\)\\(\\(?:.\\|\\)?+?\\)\\(:>\\)"
+   ;; was '("\\(<:\\)\\(\\(?:.\\|\\)?+?\\)\\(:>\\)"
+   '("\\(<:\\)\\(.*?\\)\\(:>\\)"
 	 (1 font-lock-string-face t)
 	 (2 font-lock-variable-name-face t)
 	 (3 font-lock-string-face t))
@@ -102,7 +103,10 @@
 	 (4 font-lock-comment-delimiter-face t)
 	 (5 font-lock-comment-face t))
    ;; <: $foobar #comments :>
-   '("\\(<:\\)\\(\\(?:.\\|\\)?+?\\)\\(#\\)\\(.*?\\)\\(:>\\)"
+   ;; was '("\\(<:\\)\\(\\(?:.\\|\\)?+?\\)\\(#\\)\\(.*?\\)\\(:>\\)"
+   ;; New regex stops the second .*? from grabbing :>
+   ;; which makes '<: :> # <: :>' comment '# <:' when it shouldn't
+   '("\\(<:\\)\\(.*?\\)\\(#\\)\\([^:>]*?\\)\\(:>\\)"
 	 (3 font-lock-comment-delimiter-face t)
 	 (4 font-lock-comment-face t))
    (list

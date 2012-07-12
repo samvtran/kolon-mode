@@ -10,6 +10,12 @@
 <: $var["field"] :>
 <: $var[0] :>
 
+<: $boo:>
+
+<: $post :> # <: this shouldn't be commented :>
+<: $post :> <: #this should be though :>
+<: $post #as is this :> <: but not this :>
+
 :# Literals
 : # Special 
 : nil # as undef, indicating "nothing"
@@ -144,4 +150,3 @@ $var is nil.
 		it is not foo nor bar.
 	: }
 : }
-<: $boo:>
