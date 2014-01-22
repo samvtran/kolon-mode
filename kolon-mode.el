@@ -188,11 +188,13 @@ See `comment-region'."
   (message (concat "kolon-mode version " kolon-mode-version)))
 
 ;; Show Kolon docs
+;;;###autoload
 (defun kolon-open-docs ()
   "Shows Kolon syntax docs in the browser."
   (interactive)
   (browse-url "http://search.cpan.org/dist/Text-Xslate/lib/Text/Xslate/Syntax/Kolon.pm"))
 
+;;;###autoload
 (define-derived-mode kolon-mode html-mode
   (font-lock-add-keywords nil kolon-font-lock-keywords)
   (make-local-variable 'kolon-indent-offset)
